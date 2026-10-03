@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models.models import Lane, Location, RefillOrder
+from app.models.models import Lane, Location, RefillOrder, SkuCap
 from app.services.fill_engine import build_fill_lines, summarize
 router = APIRouter(prefix="/refills", tags=["refills"])
 
@@ -15,7 +15,9 @@ def run_refill(location_id: int = 1, db: Session = Depends(get_db)):
     lanes = db.scalars(select(Lane).where(Lane.location_id == location_id).order_by(Lane.slot_no)).all()
     payload = [{"id": l.id, "slot_no": l.slot_no, "sku_name": l.sku_name,
                 "capacity": l.capacity, "stock": l.stock, "in_transit": l.in_transit} for l in lanes]
-    summary = summarize(build_fill_lines(payload))
+    caps = db.scalars(select(SkuCap).where(SkuCap.location_id == location_id)).all()
+    sku_caps = {c.sku_name: c.cap for c in caps}
+    summary = summarize(build_fill_lines(payload, sku_caps=sku_caps))
     order = RefillOrder(location_id=location_id, created_at=datetime.utcnow(),
                         lines_json=json.dumps(summary, ensure_ascii=False))
     db.add(order); db.commit(); db.refresh(order)
@@ -44,4 +46,5 @@ def refill_summary(location_id: int = 1, db: Session = Depends(get_db)):
         "need_fill_count": data["need_fill_count"],
         "full_count": data["full_count"],
         "overbooked_count": data["overbooked_count"],
+        "sku_cap_full_count": data.get("sku_cap_full_count", 0),
     }

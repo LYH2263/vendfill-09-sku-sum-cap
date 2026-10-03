@@ -10,7 +10,7 @@ onMounted(async () => {
 </script>
 <template>
   <h1>货道格子</h1>
-  <p class="sub">机面货道网格 · 格内库存条 · 右侧补货小票</p>
+  <p class="sub">机面货道网格 · 格内库存条 · 右侧补货小票 · 合计上限与补货单同源截断</p>
   <div class="vf-machine-layout">
     <div class="vf-slot-grid">
       <div v-for="r in rows" :key="r.id" class="vf-slot">
@@ -24,13 +24,14 @@ onMounted(async () => {
           />
         </div>
         <div class="vf-slot-meta">{{ r.stock }}/{{ r.capacity }} · 缺 {{ r.gap }}</div>
+        <div class="vf-slot-meta" v-if="r.sku_cap != null" style="color:var(--vf-amber)">合计上限 {{ r.sku_cap }}</div>
       </div>
     </div>
     <aside class="vf-receipt" v-if="refill">
       <h2>*** 补货建议单 ***</h2>
       <div class="vf-receipt-line" v-for="l in refill.lines" :key="l.lane_id">
         <span>{{ l.slot_no }} {{ l.sku_name }}</span>
-        <span>x{{ l.fill_qty }}</span>
+        <span>x{{ l.fill_qty }}<small v-if="l.status === 'sku_cap_full'" style="color:#b03a2e"> 同品合计已满</small></span>
       </div>
       <p class="muted" style="margin:0.75rem 0 0;font-size:0.72rem;color:#6a5e48;text-align:center">
         — 机面打印预览 —

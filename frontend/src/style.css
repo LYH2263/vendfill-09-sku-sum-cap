@@ -170,6 +170,15 @@ th { color: var(--vf-dim); font-weight: 600; font-size: 0.75rem; }
 }
 .btn:hover { filter: brightness(1.08); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-danger { background: var(--vf-red); color: #1a0508; padding: 0.25rem 0.6rem; font-size: 0.72rem; }
+.vf-input, .vf-select {
+  background: #0a0e14; color: var(--vf-text);
+  border: 1px solid #3a4656; border-radius: 3px;
+  padding: 0.4rem 0.55rem; font-size: 0.8rem; font-family: inherit;
+}
+.vf-input:focus, .vf-select:focus { outline: none; border-color: var(--vf-led); }
+.vf-form-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.vf-err { color: var(--vf-red); font-size: 0.75rem; margin: 0.5rem 0 0; }
 .muted { color: var(--vf-dim); }
 .stat { font-size: 1.55rem; font-weight: 800; color: var(--vf-led); }
 
