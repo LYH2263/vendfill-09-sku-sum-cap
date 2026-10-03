@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from app.database import Base
 
@@ -33,3 +33,12 @@ class RefillOrder(Base):
     location_id: Mapped[int] = mapped_column(ForeignKey("locations.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     lines_json: Mapped[str] = mapped_column(Text, default="[]")
+
+class SkuFillCap(Base):
+    """本机同商品合计补量上限登记；未登记的商品名不受合计约束。"""
+    __tablename__ = "sku_fill_caps"
+    __table_args__ = (UniqueConstraint("location_id", "sku_name", name="uq_sku_cap_loc_sku"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    location_id: Mapped[int] = mapped_column(ForeignKey("locations.id"))
+    sku_name: Mapped[str] = mapped_column(String(64))
+    cap_qty: Mapped[int] = mapped_column(Integer)

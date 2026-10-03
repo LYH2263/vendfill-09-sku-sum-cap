@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { api } from '../api'
+import SkuCapEditor from '../components/SkuCapEditor.vue'
 const rows = ref<any[]>([])
 onMounted(async () => { rows.value = await api('/locations') })
 </script>
 <template>
   <h1>点位 / 机位</h1>
-  <p class="sub">左侧机位选择器对应的点位档案</p>
+  <p class="sub">左侧机位选择器对应的点位档案 · 可在本页登记各点位同品合计补量上限</p>
   <div class="vf-site-rail" style="flex-direction:row;flex-wrap:wrap;border:none;background:transparent;padding:0;gap:0.5rem;margin-bottom:1rem">
     <div v-for="r in rows" :key="r.id ?? JSON.stringify(r)" class="vf-site-btn" style="min-width:140px">
       <strong style="display:block;color:var(--vf-led)">{{ r.code }}</strong>
@@ -21,4 +22,5 @@ onMounted(async () => { rows.value = await api('/locations') })
       </tbody>
     </table>
   </div>
+  <SkuCapEditor v-for="r in rows" :key="'cap-' + r.id" :location-id="r.id" />
 </template>

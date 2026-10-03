@@ -175,3 +175,22 @@ th { color: var(--vf-dim); font-weight: 600; font-size: 0.75rem; }
 
 .lane { display: flex; height: 28px; background: #0a0c10; border-radius: 4px; overflow: hidden; border: 1px solid #3a4656; margin: 0.35rem 0; }
 .lane-fill { height: 100%; }
+
+.vf-input {
+  background: #0e141c; border: 1px solid #3a4454; color: var(--vf-text);
+  border-radius: 3px; padding: 0.35rem 0.45rem; font-size: 0.78rem;
+  font-family: inherit; width: 100%;
+}
+.vf-input:focus { outline: none; border-color: var(--vf-led); }
+.vf-btn-sm { padding: 0.3rem 0.55rem; font-size: 0.72rem; white-space: nowrap; }
+.vf-btn-ghost { background: transparent; color: var(--vf-dim); border: 1px solid #3a4454; }
+.vf-btn-ghost:hover { color: var(--vf-red); border-color: var(--vf-red); filter: none; }
+.vf-cap-panel { margin-top: 1rem; }
+.vf-cap-add { display: flex; gap: 0.5rem; margin-top: 0.6rem; flex-wrap: wrap; }
+.vf-cap-add select, .vf-cap-add input { max-width: 180px; }
+.vf-cap-err { color: var(--vf-red); font-size: 0.72rem; margin: 0.5rem 0 0; }
+.vf-cap-tag {
+  display: block; margin-top: 0.2rem; font-size: 0.6rem;
+  color: var(--vf-amber); line-height: 1.3;
+}
+.vf-slot-cap { border-color: var(--vf-amber); box-shadow: inset 0 0 0 1px rgba(255,193,74,0.35); }

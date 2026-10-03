@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-from app.models.models import Lane, Location, Sale
+from app.models.models import Lane, Location, Sale, SkuFillCap
 
 def seed_if_empty(db: Session) -> None:
     if (db.scalar(select(func.count()).select_from(Location)) or 0) > 0:
@@ -13,6 +13,7 @@ def seed_if_empty(db: Session) -> None:
         ("A2", "可乐", 18, 18, 0),
         ("B1", "薯片", 12, 3, 2),
         ("B2", "巧克力", 15, 10, 5),
+        ("B3", "薯片", 10, 2, 0),
         ("C1", "能量棒", 10, 0, 0),
         ("C2", "口香糖", 24, 24, 2),
     ]
@@ -21,6 +22,9 @@ def seed_if_empty(db: Session) -> None:
         lane = Lane(location_id=loc.id, slot_no=slot, sku_name=sku, capacity=cap, stock=stock, in_transit=transit)
         db.add(lane); db.flush()
         lane_ids.append(lane.id)
+    # 薯片 B1 gap=7, B3 gap=8; aggregate cap 5 (< B1 ideal gap 7) means
+    # B1 fills 5 and B3 is zeroed with reason 同品合计已满; total 薯片 = 5.
+    db.add(SkuFillCap(location_id=loc.id, sku_name="薯片", cap_qty=5))
     now = datetime(2026, 9, 16, 12, 0, 0)
     for i, lid in enumerate(lane_ids):
         db.add(Sale(lane_id=lid, qty=2 + i, sold_at=now - timedelta(hours=i)))
